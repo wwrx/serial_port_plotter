@@ -294,7 +294,7 @@
                 <number>0</number>
                </property>
                <property name="maximum">
-                <number>999999999</number>
+                <number>2147483647</number>
                </property>
                <property name="singleStep">
                 <number>10</number>
@@ -393,10 +393,10 @@
                 </size>
                </property>
                <property name="minimum">
-                <number>-65536</number>
+                <number>-2147483646</number>
                </property>
                <property name="maximum">
-                <number>65536</number>
+                <number>2147483647</number>
                </property>
                <property name="singleStep">
                 <number>10</number>
@@ -444,10 +444,10 @@
                 </size>
                </property>
                <property name="minimum">
-                <number>-65536</number>
+                <number>-2147483646</number>
                </property>
                <property name="maximum">
-                <number>65536</number>
+                <number>2147483647</number>
                </property>
                <property name="singleStep">
                 <number>10</number>
