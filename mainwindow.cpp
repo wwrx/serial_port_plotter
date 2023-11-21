@@ -172,6 +172,9 @@ void MainWindow::createUI()
 
     /* Initialize the listwidget */
     ui->listWidget_Channels->clear();
+
+    /* Limit text output to prevent memory overflow */
+    ui->textEdit_UartWindow->document()->setMaximumBlockCount(1000);
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
