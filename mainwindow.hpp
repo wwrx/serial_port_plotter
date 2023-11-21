@@ -96,6 +96,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_pushButton_Send_clicked();
+
 signals:
     void portOpenFail();                                                                  // Emitted when cannot open port
     void portOpenOK();                                                                    // Emitted when port is open

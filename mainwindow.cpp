@@ -94,6 +94,8 @@ MainWindow::MainWindow (QWidget *parent) :
   /* Connect update timer to replot slot */
   connect (&updateTimer, SIGNAL (timeout()), this, SLOT (replot()));
 
+  connect (ui->lineEdit_Send, SIGNAL(returnPressed()), this, SLOT(on_pushButton_Send_clicked()) );
+
   m_csvFile = nullptr;
 }
 
@@ -926,3 +928,22 @@ void MainWindow::on_pushButton_clicked()
         ui->comboPort->addItem (port.portName());
     }
 }
+
+void MainWindow::on_pushButton_Send_clicked()
+{
+    if (connected)
+    {
+        auto txt = ui->lineEdit_Send->text();
+        if (ui->checkBox_CR->isChecked())
+        {
+            txt.append('\r');
+        }
+        if (ui->checkBox_LF->isChecked())
+        {
+            txt.append('\n');
+        }
+        serialPort->write(txt.toLocal8Bit());
+        //ui->lineEdit_Send->clear();
+    }
+}
+
