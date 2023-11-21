@@ -96,6 +96,7 @@ MainWindow::MainWindow (QWidget *parent) :
 
   connect (ui->lineEdit_Send, SIGNAL(returnPressed()), this, SLOT(on_pushButton_Send_clicked()) );
 
+  ui->splitter->setSizes({0,50});
   m_csvFile = nullptr;
 }
 
@@ -222,7 +223,7 @@ void MainWindow::setupPlot()
     //ui->plot->yAxis->(ui->spinYStep->value());
 
     /* User interactions Drag and Zoom are allowed only on X axis, Y is fixed manually by UI control */
-    ui->plot->setInteraction (QCP::iRangeDrag, true);
+    ui->plot->setInteraction (QCP::iRangeDrag, !plotting);
     //ui->plot->setInteraction (QCP::iRangeZoom, true);
     ui->plot->setInteraction (QCP::iSelectPlottables, true);
     ui->plot->setInteraction (QCP::iSelectLegend, true);
@@ -306,7 +307,9 @@ void MainWindow::onPortClosed()
     updateTimer.stop();
     connected = false;
     plotting = false;
-    
+
+    ui->plot->setInteraction(QCP::Interaction::iRangeDrag, true);
+
     //--
     closeCsvFile();
     
@@ -352,6 +355,8 @@ void MainWindow::portOpenedSuccess()
     updateTimer.start (20);                                                                // Slot is refreshed 20 times per second
     connected = true;                                                                      // Set flags
     plotting = true;
+
+    ui->plot->setInteraction(QCP::Interaction::iRangeDrag, false);
 }
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -673,6 +678,8 @@ void MainWindow::on_actionConnect_triggered()
         {                                                                              // Start plotting
           updateTimer.start();                                                              // Start updating plot timer
           plotting = true;
+
+          ui->plot->setInteraction(QCP::Interaction::iRangeDrag, false);
           ui->actionConnect->setEnabled (false);
           ui->actionPause_Plot->setEnabled (true);
           ui->statusBar->showMessage ("Plot restarted!");
@@ -742,6 +749,8 @@ void MainWindow::on_actionPause_Plot_triggered()
     {
       updateTimer.stop();                                                               // Stop updating plot timer
       plotting = false;
+
+      ui->plot->setInteraction(QCP::Interaction::iRangeDrag, true);
       ui->actionConnect->setEnabled (true);
       ui->actionPause_Plot->setEnabled (false);
       ui->statusBar->showMessage ("Plot paused, new data will be ignored");
@@ -783,6 +792,7 @@ void MainWindow::on_actionDisconnect_triggered()
       ui->actionConnect->setEnabled (true);
 
       plotting = false;                                                                 // Not plotting anymore
+      ui->plot->setInteraction(QCP::Interaction::iRangeDrag, true);
       ui->actionPause_Plot->setEnabled (false);
       ui->actionDisconnect->setEnabled (false);
       ui->actionRecord_stream->setEnabled(true);
@@ -889,8 +899,10 @@ void MainWindow::on_pushButton_ShowallData_clicked()
 void MainWindow::on_pushButton_AutoScale_clicked()
 {
     ui->plot->yAxis->rescale(true);
-    ui->spinAxesMax->setValue(int(ui->plot->yAxis->range().upper) + int(ui->plot->yAxis->range().upper*0.1));
-    ui->spinAxesMin->setValue(int(ui->plot->yAxis->range().lower) + int(ui->plot->yAxis->range().lower*0.1));
+    auto rangeMax = int(ceil(ui->plot->yAxis->range().upper * 1.0));
+    auto rangeMin = int(ceil(ui->plot->yAxis->range().lower * 1.0));
+    ui->spinAxesMax->setValue(rangeMax);
+    ui->spinAxesMin->setValue(rangeMin);
 }
 
 void MainWindow::on_pushButton_ResetVisible_clicked()
